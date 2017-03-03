@@ -77,23 +77,50 @@ void InitI2C(uint32_t BASE, bool mode)
 	I2CMasterInitExpClk(BASE,SysCtlClockGet(),mode);
 
 }
-void uart_config()
+void InitConsole()
 {
+
 	uint32_t status = 0;
+
+	//
+    // Enable GPIO port A which is used for UART0 pins.
+    // TODO: change this to whichever GPIO port you are using.
+    //
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+
+	//
+    // Enable UART0 so that we can configure the clock.
+    //
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+
+    //
+    // Configure the pin muxing for UART0 functions on port A0 and A1.
+    // This step is not necessary if your part does not support pin muxing.
+    // TODO: change this to select the port/pin you are using.
+    //
 	GPIOPinConfigure(GPIO_PA0_U0RX);
 	GPIOPinConfigure(GPIO_PA1_U0TX);
+
+    //
+    // Select the alternate (UART) function for these pins.
+    // TODO: change this to select the port/pin you are using.
+    //
 	GPIOPinTypeUART(GPIO_PORTA_BASE,GPIO_PIN_0 | GPIO_PIN_1);
 
+    //
+    // Initialize the UART for console I/O.
+    //
 	UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,(UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
 	UARTFIFODisable(UART0_BASE);
-//	UARTFIFOEnable(UART0_BASE);
-//	UARTFIFOLevelSet(UART0_BASE,UART_FIFO_TX7_8,UART_FIFO_RX1_8);
+
+	//	UARTFIFOEnable(UART0_BASE);
+	//	UARTFIFOLevelSet(UART0_BASE,UART_FIFO_TX7_8,UART_FIFO_RX1_8);
 
 	UARTIntRegister(UART0_BASE,isr_uart);
 	IntEnable(INT_UART0);
+
 	UARTIntEnable(UART0_BASE,UART_INT_RX|UART_INT_TX);
+
 	status = UARTIntStatus(UART0_BASE,true);
 	UARTIntClear(UART0_BASE,status);
 }

@@ -21,7 +21,7 @@
 #include "driverlib/i2c.h"
 
 void InitI2C(uint32_t , bool);
-void uart_config();
+void InitConsole();
 
 
 #endif /* CONFIGS_H_ */
