@@ -8,6 +8,7 @@ C_SRCS += \
 ../main.c \
 ../parser.c \
 ../startup_gcc.c \
+../tlv5636.c \
 ../uartstdio.c 
 
 OBJS += \
@@ -15,6 +16,7 @@ OBJS += \
 ./main.o \
 ./parser.o \
 ./startup_gcc.o \
+./tlv5636.o \
 ./uartstdio.o 
 
 C_DEPS += \
@@ -22,6 +24,7 @@ C_DEPS += \
 ./main.d \
 ./parser.d \
 ./startup_gcc.d \
+./tlv5636.d \
 ./uartstdio.d 
 
 
