@@ -5,9 +5,10 @@
 *.elf
 *.d
 
-#Project Files 
+#Eclipse Files 
 *.cproject
 *.settings
+*.mk
 
 # Precompiled Headers
 *.gch
