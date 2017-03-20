@@ -5,6 +5,13 @@ uint32_t deci = 0;
 char ascii[6]="\0";
 uint32_t hex_addr = 0;
 
+void str_cpy(char* dest,char* src)
+		{
+			uint32_t i,len1;
+			len1 = str_len(dest);
+			for(i=0;src[i] != '\0';i++) dest[i] = src[i];
+			if(i > len1) dest[i] = '\0';
+		}
 
 
 char* str_ncpy(char* dest,char* src,uint32_t n)

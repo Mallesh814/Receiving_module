@@ -15,6 +15,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/uart.h"
 
+	void str_cpy(char* ,char* );
 	char* str_ncpy(char* ,char* ,uint32_t );
     uint32_t str_len(char*);
 
