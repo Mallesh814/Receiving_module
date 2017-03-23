@@ -19,9 +19,11 @@
 #include "driverlib/i2c.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/i2c.h"
+#include "driverlib/ssi.h"
 
+void InitSPI(uint32_t , uint32_t , uint32_t , uint32_t , uint32_t , bool );
 void InitI2C(uint32_t , bool);
-void InitConsole();
+uint32_t InitConsole(uint32_t , uint32_t );
 
 
 #endif /* CONFIGS_H_ */

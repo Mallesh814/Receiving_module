@@ -45,6 +45,8 @@
 /***************************** Include Files **********************************/
 /******************************************************************************/
 #include <stdint.h>
+#include <stdbool.h>
+#include "communication.h"
 #include "AD7124_regs.h"
 
 typedef struct ad7124_device ad7124_device;
