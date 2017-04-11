@@ -147,7 +147,7 @@ void InitSPI(uint32_t ui32Base, uint32_t ui32Protocol, uint32_t ui32Mode, uint32
 
 
 
-void InitI2C(uint32_t BASE, bool mode)
+uint32_t InitI2C(uint32_t BASE, bool mode)
 {
 	uint32_t SYSCTL_PERIPH_I2C, SYSCTL_PERIPH_GPIO;
 	uint32_t CONF_PIN_SCL, CONF_PIN_SDA;
@@ -214,7 +214,9 @@ void InitI2C(uint32_t BASE, bool mode)
 
 	I2CMasterInitExpClk(BASE,SysCtlClockGet(),mode);
 
+	return BASE;
 }
+
 uint32_t InitConsole(uint32_t BASE, uint32_t baudRate)
 {
 

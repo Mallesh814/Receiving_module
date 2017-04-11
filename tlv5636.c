@@ -20,7 +20,7 @@ void tlv5636_config(tlv5636_ref_t ref) {
 
 	data = TLV5636_CMD_WRITE_CTRL | TLV5636_DEFAULT_MODE| (uint16_t)ref;
 
-	SSIDataPut(SSI1_BASE, data);
+	SSIDataPut(SSI0_BASE, data);
 }
 
 void tlv5636_set_output(uint16_t out) {
@@ -28,5 +28,5 @@ void tlv5636_set_output(uint16_t out) {
 
 	data = (out & 0x0FFF) | TLV5636_CMD_WRITE_DATA | TLV5636_DEFAULT_MODE;
 
-	SSIDataPut(SSI1_BASE, data);
+	SSIDataPut(SSI0_BASE, data);
 }

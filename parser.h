@@ -20,7 +20,7 @@
     uint32_t str_len(char*);
 
     void transfer(char*, uint32_t);
-	void dec_ascii(uint32_t,char*);
+	void dec_ascii(char*, uint32_t);
 	uint32_t ascii_dec(char* ,uint32_t*);
 	uint32_t ascii_hex_dec(char*,uint32_t*);
 	uint32_t int_hex_ascii(char* , uint32_t);

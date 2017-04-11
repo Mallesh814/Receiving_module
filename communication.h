@@ -55,18 +55,18 @@
 /*! Initializes the I2C communication peripheral. */
 unsigned char I2C_Init(unsigned long clockFreq);
 
-/*! Writes data to a slave device. */
+/*! Writes data to a slave device.
 unsigned char I2C_Write(unsigned char slaveAddress,
                         unsigned char* dataBuffer,
                         unsigned char bytesNumber,
                         unsigned char stopBit);
-
-/*! Reads data from a slave device. */
+*/
+/*! Reads data from a slave device.
 unsigned char I2C_Read(unsigned char slaveAddress,
                        unsigned char* dataBuffer,
                        unsigned char bytesNumber,
                        unsigned char stopBit);
-
+*/
 /*! Initializes the SPI communication peripheral. */
 unsigned char SPI_Init(unsigned char lsbFirst,
                        unsigned long clockFreq,
@@ -80,6 +80,16 @@ unsigned char SPI_Read(unsigned char slaveDeviceId,
 
 /*! Writes data to SPI. */
 unsigned char SPI_Write(unsigned char slaveDeviceId,
+                        unsigned char* data,
+                        unsigned char bytesNumber);
+
+/*! Writes data to I2C. */
+unsigned char I2C_Write(uint32_t i2cBase,
+                        unsigned char* data,
+                        unsigned char bytesNumber);
+
+/*! Writes data to I2C. */
+unsigned char I2C_Read(uint32_t i2cBase,
                         unsigned char* data,
                         unsigned char bytesNumber);
 

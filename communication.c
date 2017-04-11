@@ -72,7 +72,7 @@ unsigned char SPI_Init(unsigned char lsbFirst,
                        unsigned char clockEdg)
 {
     /* Add your code here. */
-	InitSPI(SSI0_BASE, SSI_FRF_MOTO_MODE_3, SSI_MODE_MASTER, 1000000, 8, 0);
+	InitSPI(SSI3_BASE, SSI_FRF_MOTO_MODE_3, SSI_MODE_MASTER, 1000000, 8, 0);
 }
 
 /***************************************************************************//**
@@ -89,7 +89,33 @@ unsigned char SPI_Read(unsigned char slaveDeviceId,
                        unsigned char* data,
                        unsigned char bytesNumber)
 {
-    /* Add your code here. */
+	uint8_t i         = 0;
+	uint8_t count     = 0;
+	int32_t i32Status;
+	uint32_t ui32Receive;
+
+	while(SSIDataGetNonBlocking(SSI3_BASE, &ui32Receive)); // Clear FIFO Before Initiation a read Operation
+
+	GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_1, 0X00);	// PULL DOWN Slave Slect PIN
+	for(i=0; i <= bytesNumber; ++i){
+		SSIDataPut(SSI3_BASE, data[i]);
+	}
+	while(SSIBusy(SSI3_BASE));
+	GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_1, 0XFF);	// PULL UP Slave Slect PIN
+
+	count = 0;
+	for(i=0; i <= bytesNumber; ++i){
+		i32Status = SSIDataGetNonBlocking(SSI3_BASE, &ui32Receive);
+		if(i32Status) {
+			count++;
+			data[i] = 0x00FF & ui32Receive;
+		}
+	}
+
+	if(count != (bytesNumber+1))
+		return -1;
+
+	return count;
 }
 
 /***************************************************************************//**
@@ -105,5 +131,112 @@ unsigned char SPI_Write(unsigned char slaveDeviceId,
                         unsigned char* data,
                         unsigned char bytesNumber)
 {
-    /* Add your code here. */
+	uint8_t i		= 0;
+	uint32_t ui32Receive;
+
+	while(SSIDataGetNonBlocking(SSI3_BASE, &ui32Receive)); // Clear FIFO Before Initiation a read Operation
+
+	GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_1, 0X00);	// PULL DOWN Slave Slect PIN
+	for(i=0; i <= bytesNumber; ++i){
+		SSIDataPut(SSI3_BASE, data[i]);
+	}
+	while(SSIBusy(SSI3_BASE));
+	GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_1, 0XFF);	// PULL UP Slave Slect PIN
+
+	while(SSIDataGetNonBlocking(SSI3_BASE, &ui32Receive)); // Clear FIFO Before Initiation a read Operation
+
+	return i-1;
+}
+
+/***************************************************************************//**
+ * @brief Writes data to SPI.
+ *
+ * @param i2cBase - The ID of the selected slave device.
+ * @param data - Data represents the write buffer.
+ * @param bytesNumber - Number of bytes to write.
+ *
+ * @return Number of written bytes.
+*******************************************************************************/
+unsigned char I2C_Write(uint32_t i2cBase,
+                        unsigned char* data,
+                        unsigned char bytesNumber)
+{
+
+	uint8_t i;
+	I2CMasterSlaveAddrSet(i2cBase,data[0],false);
+	I2CMasterDataPut(i2cBase,data[1]);
+	I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_SEND_START);
+	while(I2CMasterBusy(i2cBase));
+	if(I2CMasterErr(i2cBase)!= 0)
+	{
+		return 1;
+	}
+
+	for(i = 2; i < bytesNumber - 1; i++){
+		I2CMasterDataPut(i2cBase,data[i]);
+		I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_SEND_CONT);
+		while(I2CMasterBusy(i2cBase));
+		if(I2CMasterErr(i2cBase)!= 0)
+		{
+			return 1;
+		}
+	}
+
+	I2CMasterDataPut(i2cBase,data[bytesNumber-1]);
+	I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_SEND_FINISH);
+	while(I2CMasterBusy(i2cBase));
+	while(I2CMasterBusBusy(i2cBase));
+	if(I2CMasterErr(i2cBase)!= 0)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+
+
+
+unsigned char I2C_Read(uint32_t i2cBase,
+                        unsigned char* data,
+                        unsigned char bytesNumber)
+{
+	uint32_t ui32Receive;
+	uint8_t i;
+
+	I2CMasterSlaveAddrSet(i2cBase,data[0],false);
+	I2CMasterDataPut(i2cBase, data[1]);
+
+	I2CMasterControl(i2cBase, I2C_MASTER_CMD_SINGLE_SEND);
+	while(I2CMasterBusy(i2cBase));
+
+	if(I2CMasterErr(i2cBase)!= 0)	return 1;
+
+	I2CMasterSlaveAddrSet(i2cBase, data[0], true);
+	I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_RECEIVE_START);
+	while(I2CMasterBusy(i2cBase));
+
+	if(I2CMasterErr(i2cBase)!= 0)	return 1;
+
+	ui32Receive = I2CMasterDataGet(i2cBase);
+	data[2] = 0x00FF & ui32Receive;
+
+	for(i = 3; i < (bytesNumber - 1) ; i++)
+	{
+		I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_RECEIVE_CONT);
+		while(I2CMasterBusy(i2cBase));
+
+		if(I2CMasterErr(i2cBase)!= 0)	return 1;
+		ui32Receive = I2CMasterDataGet(i2cBase);
+		data[i] = 0x00FF & ui32Receive;
+	}
+
+	I2CMasterControl(i2cBase, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+	while(I2CMasterBusy(i2cBase));
+
+	if(I2CMasterErr(i2cBase)!= 0)	return 1;
+	ui32Receive = I2CMasterDataGet(i2cBase);
+	data[bytesNumber-1] = 0x00FF & ui32Receive;
+
+	return i;
 }

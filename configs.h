@@ -22,7 +22,7 @@
 #include "driverlib/ssi.h"
 
 void InitSPI(uint32_t , uint32_t , uint32_t , uint32_t , uint32_t , bool );
-void InitI2C(uint32_t , bool);
+uint32_t InitI2C(uint32_t , bool);
 uint32_t InitConsole(uint32_t , uint32_t );
 
 

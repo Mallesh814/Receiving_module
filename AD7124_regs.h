@@ -1,6 +1,8 @@
 #ifndef __AD7124_REGS_H__
 #define __AD7124_REGS_H__
 
+//#define AD7124_INIT
+
 #define	AD7124_RW 1   /* Read and Write */
 #define	AD7124_R  2   /* Read only */
 #define AD7124_W  3   /* Write only */
@@ -225,7 +227,7 @@ ad7124_st_reg ad7124_regs[] =
 #define AD7124_ADC_CTRL_REG_REF_EN         (1 << 8)
 #define AD7124_ADC_CTRL_REG_POWER_MODE(x)  (((x) & 0x3) << 6)
 #define AD7124_ADC_CTRL_REG_MODE(x)        (((x) & 0xF) << 2)
-#define AD7124_ADC_CTRL_REG_CLK_SEL(x))    (((x) & 0x3) << 0)
+#define AD7124_ADC_CTRL_REG_CLK_SEL(x)    (((x) & 0x3) << 0)
 
 /* IO_Control_1 Register bits */
 #define AD7124_IO_CTRL1_REG_GPIO_DAT2     (1 << 23)

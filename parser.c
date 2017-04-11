@@ -44,7 +44,7 @@ void transfer(char* data, uint32_t uart_base){
 
 }
 
-void dec_ascii(uint32_t num,char*pasc){
+void dec_ascii(char*pasc, uint32_t num){
 	uint32_t j;
 	j=num;
 	do{
